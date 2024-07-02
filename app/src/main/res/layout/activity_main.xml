@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/yellowbackground"
+
+    tools:context=".MainActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="60dp"
+        android:gravity="center"
+        android:layout_marginBottom="20dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/capture_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="60dp"
+            android:text="Scan Text"
+            app:cornerRadius="10dp"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/orange" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/translateBtn"
+            android:backgroundTint="@color/orange"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="60dp"
+            android:textColor="@color/white"
+            android:text="Translate"
+            android:layout_marginLeft="20dp"
+            app:cornerRadius="10dp" />
+
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:padding="8dp"
+
+        android:layout_alignParentTop="true"
+        android:text="Text Translator"
+        android:textSize="28sp"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:textColor="@color/orange"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="40dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/options"
+        android:layout_marginTop="10dp"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="8dp"
+        background="?attr/selectableItemBackground">
+
+        <androidx.camera.view.PreviewView
+            android:id="@+id/viewFinder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+    </androidx.cardview.widget.CardView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrlv2"
+        android:layout_below="@+id/cardView"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="140dp">
+
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/sourceLanguage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Text here"
+                android:textColor="@color/black"
+                android:textColorHint="@color/fadeblack"
+                android:layout_marginHorizontal="40dp"
+                android:padding="8dp"
+                android:textAlignment="center"
+                android:background="@drawable/custom_input"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:rotation="90"
+                android:layout_marginHorizontal="8dp"
+                android:src="@drawable/arrow_right" />
+
+
+            <EditText
+                android:id="@+id/TargetLanguage"
+                android:layout_below="@+id/cardView"
+                android:layout_marginBottom="54dp"
+                android:layout_marginHorizontal="40dp"
+                android:layout_above="@id/capture_button"
+                android:layout_width="match_parent"
+                android:background="@drawable/custom_input2"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/black"
+                android:textAlignment="center"
+                android:cursorVisible="false"
+                android:inputType="none"
+                android:editable="false"
+                android:longClickable="true"
+                android:textIsSelectable="true"
+                android:text="Translated Text"
+                android:padding="8dp"
+                android:textSize="18sp" />
+        </LinearLayout>
+    </ScrollView>
+
+
+    <LinearLayout
+        android:id="@+id/options"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textv"
+        android:layout_marginHorizontal="60dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/sourceButton"
+            android:layout_width="wrap_content"
+            android:backgroundTint="@color/orange"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="English"
+            app:cornerRadius="10dp"
+            android:textColor="@color/white"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="8dp"
+            android:src="@drawable/arrow_right" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/chooseBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/orange"
+            android:gravity="center"
+            android:text="Hindi"
+            android:textColor="@color/white"
+            app:cornerRadius="10dp" />
+    </LinearLayout>
+
+
+
+</RelativeLayout>
