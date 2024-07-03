@@ -12,7 +12,7 @@ A Kotlin-based Android Translator App that uses Firebase ML Kit for language ide
 
 | Feature | Screenshot |
 |---------|-------------|
-| Home Screen | ![Home Screen](https://github.com/LavKalsi/LanguageTranslatorApp/tree/master/Screenshot/AppScreenshot.png) |
+| Home Screen | ![AppScreenshot](https://github.com/LavKalsi/LanguageTranslatorApp/tree/master/Screenshot/AppScreenshot.png) |
 | Language Detection | ![Language Detection](path/to/language_detection.png) |
 | Translation | ![Translation](path/to/translaption.png) |
 | Camera Text Capture | ![Camera Text Capture](path/to/camera_text_capture.png) |
