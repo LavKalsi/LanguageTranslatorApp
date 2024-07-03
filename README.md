@@ -1,4 +1,6 @@
-# Translator App
+# Language Translator App
+
+![Latest Release](https://img.shields.io/github/v/release/LavKalsi/LanguageTranslatorApp?include_prereleases)
 
 A Kotlin-based Android Translator App that uses Firebase ML Kit for language identification and translation.
 
@@ -22,8 +24,8 @@ A Kotlin-based Android Translator App that uses Firebase ML Kit for language ide
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/yourusername/translator-app.git
-    cd translator-app
+    git clone https://github.com/LavKalsi/LanguageTranslatorApp.git
+    cd LanguageTranslatorApp
     ```
 
 2. Open the project in Android Studio.
@@ -67,4 +69,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Thanks to the Firebase team for their awesome ML Kit.
 - Inspiration and code snippets from various online resources.
-
