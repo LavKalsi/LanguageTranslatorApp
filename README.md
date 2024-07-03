@@ -1,6 +1,4 @@
-# Language Translator App
-
-![Latest Release](https://img.shields.io/github/v/release/LavKalsi/LanguageTranslatorApp?include_prereleases)
+# Translator App
 
 A Kotlin-based Android Translator App that uses Firebase ML Kit for language identification and translation.
 
@@ -24,19 +22,27 @@ A Kotlin-based Android Translator App that uses Firebase ML Kit for language ide
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/LavKalsi/LanguageTranslatorApp.git
-    cd LanguageTranslatorApp
+    git clone https://github.com/yourusername/translator-app.git
+    cd translator-app
     ```
 
 2. Open the project in Android Studio.
 
 3. Build and run the project on an Android device or emulator.
 
-## Download
+## Adding APK to GitHub
 
-You can download the latest version of the app from the [Releases](https://github.com/LavKalsi/LanguageTranslatorApp/releases) section. Alternatively, download the APK directly using this link:
+To add the APK file of your app to GitHub, follow these steps:
 
-[Download APK](https://github.com/LavKalsi/LanguageTranslatorApp/releases/download/v1.0/TranslatorApp.apk)
+1. Build your app in Android Studio to generate the APK file. You can find the APK file in the `app/build/outputs/apk/` directory.
+
+2. Create a new release on GitHub:
+    - Go to the "Releases" section of your GitHub repository.
+    - Click on "Draft a new release".
+    - Fill in the tag version (e.g., `v1.0`) and release title (e.g., `Initial Release`).
+    - Add a description for your release.
+    - Attach the APK file by dragging and dropping it into the release description area or by using the "Attach binaries by dropping them here or selecting them" button.
+    - Click on "Publish release" to make the release live.
 
 ## Usage
 
@@ -61,3 +67,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Thanks to the Firebase team for their awesome ML Kit.
 - Inspiration and code snippets from various online resources.
+
