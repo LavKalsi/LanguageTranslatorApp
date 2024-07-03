@@ -31,7 +31,7 @@ A Kotlin-based Android Translator App that uses Firebase ML Kit for language ide
 
 3. Build and run the project on an Android device or emulator.
 
-OR
+    OR
 
 1. Go to releases and download the apk file.
 
