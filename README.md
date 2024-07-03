@@ -31,6 +31,10 @@ A Kotlin-based Android Translator App that uses Firebase ML Kit for language ide
 
 3. Build and run the project on an Android device or emulator.
 
+OR
+
+1. Go to releases and download the apk file.
+
 ## Adding APK to GitHub
 
 To add the APK file of your app to GitHub, follow these steps:
@@ -48,7 +52,9 @@ To add the APK file of your app to GitHub, follow these steps:
 ## Usage
 
 1. Open the app on your Android device.
-2. Use the camera to capture text.
+2. Enter text manually.
+   OR
+   Use the camera and Press the Scan text button to Capture text.
 3. The app will automatically detect the language and provide a translation.
 
 ## Built With
@@ -60,12 +66,11 @@ To add the APK file of your app to GitHub, follow these steps:
 
 Feel free to contribute to this project by submitting a pull request. Please make sure to follow the standard GitHub flow when contributing.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## Acknowledgments
 
 - Thanks to the Firebase team for their awesome ML Kit.
 - Inspiration and code snippets from various online resources.
+
+## Author
+Lav Kalsi
 
