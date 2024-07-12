@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/LanguageTranslatorApp/static/css/main.72ef56c9.css",
+    "main.js": "/LanguageTranslatorApp/static/js/main.a56a4814.js",
+    "static/js/453.ac9509ff.chunk.js": "/LanguageTranslatorApp/static/js/453.ac9509ff.chunk.js",
+    "static/media/HomeScreen.png": "/LanguageTranslatorApp/static/media/HomeScreen.5f5bab3763448607d672.png",
+    "static/media/frame.png": "/LanguageTranslatorApp/static/media/frame.378c06caaa84cf022d78.png",
+    "index.html": "/LanguageTranslatorApp/index.html",
+    "main.72ef56c9.css.map": "/LanguageTranslatorApp/static/css/main.72ef56c9.css.map",
+    "main.a56a4814.js.map": "/LanguageTranslatorApp/static/js/main.a56a4814.js.map",
+    "453.ac9509ff.chunk.js.map": "/LanguageTranslatorApp/static/js/453.ac9509ff.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.72ef56c9.css",
+    "static/js/main.a56a4814.js"
+  ]
+}
