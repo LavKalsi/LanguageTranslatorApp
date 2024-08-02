@@ -9,4 +9,6 @@
     <color name="fadeblack">#97000000</color>
     <color name="invisible">#56FBAA73</color>
     <color name="invisible2">#3CF8F1EC</color>
+    <color name="fullinvisible">#6DFFFFFF</color>
+    <color name="realinvisible">#00FFFFFF</color>
 </resources>

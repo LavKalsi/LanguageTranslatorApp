@@ -2,6 +2,7 @@ package com.learn.translatorapp
 
 import android.Manifest
 import android.app.ProgressDialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -11,6 +12,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
@@ -31,12 +33,15 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.learn.translatorapp.databinding.ActivityMainBinding
+import com.google.android.material.snackbar.Snackbar
 import java.io.File
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
+import android.speech.RecognitionListener
 
 class MainActivity : AppCompatActivity() {
 
@@ -45,6 +50,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sourceButton: MaterialButton
     private lateinit var chooseBtn: MaterialButton
     private lateinit var translateBtn: MaterialButton
+    private lateinit var saveHistoryBtn: MaterialButton
+    private lateinit var historyBtn: ImageView
+    private lateinit var micButton: ImageView
+    private lateinit var speechRecognizer: SpeechRecognizer
+    private lateinit var speechRecognizerIntent: Intent
+    private lateinit var micSnackbar: Snackbar
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var imageCapture: ImageCapture
@@ -69,14 +80,22 @@ class MainActivity : AppCompatActivity() {
     private lateinit var translatorOptions: TranslatorOptions
     private lateinit var translator: Translator
     private lateinit var progressDialog: ProgressDialog
+    private lateinit var dbHelper: TranslationDBHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
+        speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+        }
+
         outputDirectory = getOutputDirectory()
         cameraExecutor = Executors.newSingleThreadExecutor()
+        dbHelper = TranslationDBHelper(this)
 
         if (allPermissionsGranted()) {
             startCamera()
@@ -95,6 +114,10 @@ class MainActivity : AppCompatActivity() {
         sourceButton = findViewById(R.id.sourceButton)
         chooseBtn = findViewById(R.id.chooseBtn)
         translateBtn = findViewById(R.id.translateBtn)
+        saveHistoryBtn = findViewById(R.id.saveHistoryBtn)
+        historyBtn = findViewById(R.id.historyBtn)
+
+        micButton = findViewById(R.id.mic_button)
 
         progressDialog = ProgressDialog(this)
         progressDialog.setTitle("Please wait")
@@ -111,6 +134,55 @@ class MainActivity : AppCompatActivity() {
         translateBtn.setOnClickListener {
             validateData()
         }
+
+        saveHistoryBtn.setOnClickListener {
+            saveTranslation("Text:\n\t${sourceLanguage.text.toString()}", "Translation:\n\t${targetLanguage.text.toString()}")
+            navigateToHistory()
+        }
+
+        historyBtn.setOnClickListener {
+            navigateToHistory()
+        }
+
+        micButton.setOnClickListener {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.RECORD_AUDIO), REQUEST_CODE_PERMISSIONS)
+            } else {
+                startListening()
+            }
+        }
+
+        // Initialize Snackbar
+        micSnackbar = Snackbar.make(binding.root, "Listening...", Snackbar.LENGTH_INDEFINITE)
+
+        speechRecognizer.setRecognitionListener(object : RecognitionListener {
+            override fun onReadyForSpeech(params: Bundle?) {
+                micSnackbar.show()
+            }
+            override fun onBeginningOfSpeech() {}
+            override fun onRmsChanged(rmsdB: Float) {}
+            override fun onBufferReceived(buffer: ByteArray?) {}
+            override fun onEndOfSpeech() {
+                micSnackbar.dismiss()
+            }
+            override fun onError(error: Int) {
+                micSnackbar.dismiss()
+                showToast("Speech recognition error")
+            }
+
+            override fun onResults(results: Bundle?) {
+                micSnackbar.dismiss()
+                val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                matches?.let {
+                    if (it.isNotEmpty()) {
+                        val recognizedText = it[0]
+                        sourceLanguage.setText(recognizedText)
+                    }
+                }
+            }
+            override fun onPartialResults(partialResults: Bundle?) {}
+            override fun onEvent(eventType: Int, params: Bundle?) {}
+        })
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -152,13 +224,11 @@ class MainActivity : AppCompatActivity() {
         val scaleX = (bitmap.width.toFloat() / viewFinder.width.toFloat())
         val scaleY = (bitmap.height.toFloat() / viewFinder.height.toFloat())/3
 
-        // Calculate crop coordinates starting from the center of the bitmap
         val cropWidth = viewFinderWidth * scaleX
         val cropHeight = viewFinderHeight * scaleY
         val cropStartX = (bitmap.width - cropWidth.toInt()) / 2
         val cropStartY = (bitmap.height - cropHeight.toInt()) / 2
 
-        // Crop the bitmap starting from the calculated center coordinates
         val croppedBitmap = Bitmap.createBitmap(
             bitmap,
             cropStartX,
@@ -167,22 +237,16 @@ class MainActivity : AppCompatActivity() {
             cropHeight.toInt()
         )
 
-        // Rotate the cropped bitmap if needed (adjust rotation degrees as per your device)
         val rotatedBitmap = rotateBitmap(croppedBitmap, 270f)
 
-        // Convert rotated bitmap to InputImage for ML Kit
         val image = InputImage.fromBitmap(rotatedBitmap, 0)
 
-        // Initialize text recognizer
         val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
-        // Process the image for text recognition
         recognizer.process(image)
             .addOnSuccessListener { visionText ->
-                // Extract recognized text
                 val recognizedText = visionText.text
                 Log.d(TAG2, "Recognized text: $recognizedText")
-                // Set recognized text to EditText
                 sourceLanguage.setText(recognizedText)
                 showToast("Text recognized and copied to input field")
             }
@@ -197,8 +261,6 @@ class MainActivity : AppCompatActivity() {
         matrix.postRotate(degrees)
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
-
-
 
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
@@ -245,26 +307,30 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
+        speechRecognizer.destroy()
     }
-
     private var sourceLanguageText = ""
     private fun validateData() {
-        sourceLanguageText = sourceLanguage.text.toString().trim()
+        val sourceLanguageText = sourceLanguage.text.toString().trim()
 
         if (sourceLanguageText.isEmpty()) {
-            showToast("Enter Text to Translate")
-        } else {
-            startTranslation()
+            showToast("Please enter text to translate")
+            return
         }
-    }
 
-    private fun startTranslation() {
+        if (sourceLanguageCode == targetLanguageCode) {
+            showToast("Source and target languages are the same")
+            return
+        }
+
         progressDialog.setMessage("Translating...")
         progressDialog.show()
+
         translatorOptions = TranslatorOptions.Builder()
             .setSourceLanguage(sourceLanguageCode)
             .setTargetLanguage(targetLanguageCode)
             .build()
+
         translator = Translation.getClient(translatorOptions)
 
         val downloadConditions = DownloadConditions.Builder()
@@ -330,5 +396,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    // Function to save translation history
+    private fun saveTranslation(sourceText: String, translatedText: String) {
+        dbHelper.insertTranslation(sourceText, translatedText)
+        showToast("Translation saved to history")
+    }
+
+    // Navigate to HistoryActivity
+    private fun navigateToHistory() {
+        val intent = Intent(this, HistoryActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun startListening() {
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, sourceLanguageCode)
+        speechRecognizer.startListening(speechRecognizerIntent)
     }
 }
